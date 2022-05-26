@@ -1,19 +1,22 @@
-import docker
 import yaml
 import os
-client = docker.from_env()
 cwd = os.getcwd()
 
-manifests = []
-for filename in os.listdir(cwd + "/stacks/manifests/"):
+# Create an empty array of stack objects
+stacks = []
+# Iterate through the manifests in the directory
+for filename in os.listdir(cwd + "/stacks/"):
+    # Check if it is a yaml file
     if filename.endswith(".yml") or filename.endswith(".yaml"):
-        with open( f"{cwd}/stacks/manifests/{filename}", "r") as stream:
-            manifest = ""
+        # Open the file
+        with open( f"{cwd}/stacks/{filename}", "r") as stream:
             try:
-                manifest = yaml.safe_load(stream)
+                # Load the yaml file
+                stack = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
-        manifests.append(manifest)
+        # Append the stack to the array
+        stacks.append(stacks)
+        print(f"Loaded stack from {filename}")
 
-print(manifests)
 #client.containers.run("hello-world")
