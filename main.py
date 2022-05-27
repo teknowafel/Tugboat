@@ -24,8 +24,7 @@ def load_stacks():
     #client.containers.run("hello-world")
     return stacks
 
-if __name__ == "__main__":
-    stacks = load_stacks()
+def initialize_stacks():
     for stack in stacks:
         with open( f"{cwd}/stacks/manifests/{stack['manifest']}", "r") as stream:
             try:
@@ -33,5 +32,17 @@ if __name__ == "__main__":
                 manifest = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
-        print(manifest)
-        print(check(manifest))
+        
+        # Check if the stack is up
+        if check(manifest) == True:
+            print(f"Stack ${stack['appname']} is already up")
+        else:
+            # Alert the user that the stack is not up
+            print(f"Stack {stack['appname']} is not up, starting...")
+            # Start the stack
+
+if __name__ == "__main__":
+    stacks = load_stacks()
+    initialize_stacks()
+    
+
