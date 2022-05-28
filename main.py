@@ -1,8 +1,9 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 import yaml
 import os
-from lib.compose import check, up, update
+from lib.dockercompose import check, up, update
 import lib.schedule
+from time import sleep
 cwd = os.getcwd()
 
 def load_stacks():
@@ -25,7 +26,7 @@ def load_stacks():
 
     return stacks
 
-def initialize_stacks(stacks):
+def initialize_stacks(stacks, scheduler):
     for stack in stacks:
         # Check if the stack is up
         if check(stack):
@@ -42,7 +43,6 @@ def initialize_stacks(stacks):
                 print(f"Error starting stack {stack['appname']}")
 
         print(f"Scheduling updates for stack {stack['appname']}")
-        scheduler = BackgroundScheduler()
         try:
             if stack["updates"]["type"] == "interval":
                 lib.schedule.schedule_interval(stack, scheduler, stack["updates"]["interval"])
@@ -59,4 +59,14 @@ def initialize_stacks(stacks):
 
 if __name__ == "__main__":
     stacks = load_stacks()
-    initialize_stacks(stacks)
+    scheduler = BackgroundScheduler()
+    initialize_stacks(stacks, scheduler)
+
+    try:
+        # This is here to simulate application activity (which keeps the main thread alive).
+        while True:
+            sleep(5)
+    except (KeyboardInterrupt, SystemExit):
+        # Not strictly necessary if daemonic mode is enabled but should be done if possible
+        scheduler.shutdown()
+
