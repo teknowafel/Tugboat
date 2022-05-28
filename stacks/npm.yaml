@@ -1,2 +1,11 @@
+# Name of the manifest file in the /manifests folder
 manifest: npm-manifest.yaml
+# Name of the stack
 appname: nginx-proxy-manager
+
+# When should the stack update?
+updates:
+  # Update type. Options: interval, cron (extended with support for seconds (* * * * * *)), webhook
+  type: interval
+  # Interval (s)
+  interval: 5

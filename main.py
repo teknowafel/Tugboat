@@ -1,6 +1,6 @@
 import yaml
 import os
-from compose import check, up, update
+from lib.compose import check, up, update
 cwd = os.getcwd()
 
 def load_stacks():
