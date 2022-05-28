@@ -1,6 +1,6 @@
 import yaml
 import os
-from stacklib import check
+from compose import check, up, update
 cwd = os.getcwd()
 
 def load_stacks():
@@ -21,28 +21,27 @@ def load_stacks():
             stacks.append(stack)
             print(f"Loaded stack from {filename}")
 
-    #client.containers.run("hello-world")
     return stacks
 
-def initialize_stacks():
+def initialize_stacks(stacks):
     for stack in stacks:
-        with open( f"{cwd}/stacks/manifests/{stack['manifest']}", "r") as stream:
-            try:
-                # Load the yaml file
-                manifest = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                print(exc)
-        
         # Check if the stack is up
-        if check(manifest) == True:
-            print(f"Stack ${stack['appname']} is already up")
+        if check(stack):
+            print(f"Stack {stack['appname']} is already up")
         else:
             # Alert the user that the stack is not up
             print(f"Stack {stack['appname']} is not up, starting...")
             # Start the stack
+            up(stack)
+            
+            if check(stack):
+                print(f"Stack {stack['appname']} has been started")
+            else:
+                print(f"Error starting stack {stack['appname']}")
+
 
 if __name__ == "__main__":
     stacks = load_stacks()
-    initialize_stacks()
-    
+    initialize_stacks(stacks)
+        
 

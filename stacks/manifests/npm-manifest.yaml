@@ -7,6 +7,12 @@ services:
       - '80:80'
       - '81:81'
       - '443:443'
+    networks:
+      - npm
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
+
+networks:
+  npm:
+    driver: bridge
