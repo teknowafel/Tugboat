@@ -10,11 +10,11 @@ def load_stacks():
     # Create an empty array of stack objects
     stacks = []
     # Iterate through the manifests in the directory
-    for filename in os.listdir(cwd + "/stacks/"):
+    for filename in os.listdir(cwd + "/repo/stacks/"):
         # Check if it is a yaml file
         if filename.endswith(".yml") or filename.endswith(".yaml"):
             # Open the file
-            with open( f"{cwd}/stacks/{filename}", "r") as stream:
+            with open( f"{cwd}/repo/stacks/{filename}", "r") as stream:
                 try:
                     # Load the yaml file
                     stack = yaml.safe_load(stream)
@@ -44,15 +44,19 @@ def initialize_stacks(stacks, scheduler):
 
         print(f"Scheduling updates for stack {stack['appname']}")
         try:
+            # Interval updates
             if stack["updates"]["type"] == "interval":
                 lib.schedule.schedule_interval(stack, scheduler, stack["updates"]["interval"])
                 print(f"{stack['appname']} scheduled to update every {stack['updates']['interval']} seconds")
+            # Cron updates
             elif stack["updates"]["type"] == "cron":
                 lib.schedule.schedule_cron(stack, scheduler, stack["updates"]["expression"])
                 print(f"{stack['appname']} scheduled to update at {stack['updates']['expression']} seconds")
         except:
+            # If there is malformed or no schedule config
             print(f"Malformed or no schedule configuration for stack {stack['appname']}. Updates will not be scheduled.")
     
+    # Start the scheduler
     scheduler.start()
     print("Scheduler has been started")
 

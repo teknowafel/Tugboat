@@ -1,6 +1,9 @@
 # Secrets
 secrets.yaml
 
+# Repo with config
+repo/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
