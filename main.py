@@ -1,7 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 import yaml
 import os
-from lib.dockercompose import check, up, update
+from lib.compose import check, up, update
 import lib.schedule
 from time import sleep
 cwd = os.getcwd()
