@@ -82,9 +82,13 @@ if __name__ == "__main__":
     initialize_stacks(stacks, scheduler)
     
     try:
-        # This is here to simulate application activity (which keeps the main thread alive).
+        # Pull the git repo every 5 seconds
         while True:
             sleep(5)
+            # In the case that there are changes pulled, reload the stacks.
+            if git.update_config():
+                stacks = load_stacks()
+                initialize_stacks(stacks, scheduler)
     except (KeyboardInterrupt, SystemExit):
         # Not strictly necessary if daemonic mode is enabled but should be done if possible
         scheduler.shutdown()
