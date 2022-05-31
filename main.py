@@ -5,17 +5,18 @@ from lib.compose import check, up, update
 import lib.schedule
 from time import sleep
 from lib.log import log
+import lib.git as git
 cwd = os.getcwd()
 
 def load_stacks():
     # Create an empty array of stack objects
     stacks = []
     # Iterate through the manifests in the directory
-    for filename in os.listdir(cwd + "/stacks/"):
+    for filename in os.listdir(cwd + "/config/stacks/"):
         # Check if it is a yaml file
         if filename.endswith(".yml") or filename.endswith(".yaml"):
             # Open the file
-            with open( f"{cwd}/stacks/{filename}", "r") as stream:
+            with open( f"{cwd}/config/stacks/{filename}", "r") as stream:
                 try:
                     # Load the yaml file
                     stack = yaml.safe_load(stream)
@@ -57,8 +58,25 @@ def initialize_stacks(stacks, scheduler):
     scheduler.start()
     log("Scheduler has been started", "green")
 
+def get_ssh():
+    if not os.path.exists(f"{cwd}/.ssh/id_rsa.pub"):
+        try:
+            git.gen_key()
+        except:
+            return False
+
+    pubkey = ""
+    try:
+        f = open(f"{cwd}/.ssh/id_rsa.pub")
+        pubkey = f.read()
+        f.close()
+    except:
+        return False
+
+    log(f"If you haven't already added the SSH key for your config repo, copy this public key starting on the next line to create a deploy key WITH WRITE ACCESS, then restart Tugboat. \n {pubkey}", "green")
 
 if __name__ == "__main__":
+    get_ssh()
     stacks = load_stacks()
     scheduler = BackgroundScheduler()
     initialize_stacks(stacks, scheduler)

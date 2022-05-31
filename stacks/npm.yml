@@ -1,5 +1,0 @@
-appname: nginx-proxy-manager
-manifest: npm-manifest.yml
-updates:
-  type: interval
-  interval: 5

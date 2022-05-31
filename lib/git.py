@@ -1,6 +1,7 @@
-from sh import git
+from sh import git, echo
 import sh
 import os
+import yaml
 
 cwd = os.getcwd()
 
@@ -15,9 +16,18 @@ def gen_key():
 
     try:
         keygen("-t", "rsa", "-q", "-f", f"{cwd}/.ssh/id_rsa", "-N", '""')
+        return True
     except:
         return False
 
-#TODO
-#def clone_config():
-#    os.putenv("GIT_SSH_COMMAND", f"ssh -i {cwd}/.ssh/id_rsa -F /dev/null")
+def clone_config():
+    try:
+        agent = sh.Command("ssh-agent")
+        f = open(f"{cwd}/config.yml")
+        config = yaml.safe_load(f.read())
+        f.close()
+
+        agent("sh", "-c", f"'ssh-add {cwd}/.ssh/id_rsa; git clone {config['repo-ssh-url']} {cwd}/config'")
+    except Exception as e:
+        print(e)
+        return False

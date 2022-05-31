@@ -18,7 +18,7 @@ def up(stack):
         if not os.path.exists(f"/var/tmp/{stack['appname']}/"):
             os.makedirs(f"/var/tmp/{stack['appname']}/")
 
-        f = open(f"{cwd}/stacks/manifests/{stack['manifest']}", "r")
+        f = open(f"{cwd}/config/stacks/manifests/{stack['manifest']}", "r")
         g = open(f"/var/tmp/{stack['appname']}/docker-compose.yml", "w")
 
         g.write(f.read())
@@ -32,7 +32,7 @@ def up(stack):
 
 def update(stack):
     manifest = []
-    with open( f"{cwd}/stacks/manifests/{stack['manifest']}", "r") as stream:
+    with open( f"{cwd}/config/stacks/manifests/{stack['manifest']}", "r") as stream:
         try:
             # Load the yaml file
             manifest = yaml.safe_load(stream)
