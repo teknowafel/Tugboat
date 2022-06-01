@@ -97,4 +97,4 @@ if __name__ == "__main__":
             log("There was an error pulling config from git", "red")
 
     else:
-        log("There was an error cloning the config / missing config from the git repo", "red")
+        log("config.yml is missing or malformed", "red")

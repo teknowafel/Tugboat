@@ -1,4 +1,3 @@
-from numpy import true_divide
 from sh import docker
 import os
 import yaml
