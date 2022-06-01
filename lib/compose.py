@@ -40,7 +40,7 @@ def up(stack):
 
         # Return true if the stack has been started successfully
         return "Running" in docker("compose", "up", "-d", _cwd=f"/var/tmp/{stack['appname']}/")
-    except:
+    except Exception as e:
         return False
 
 # Function to update a tack
@@ -67,7 +67,7 @@ def update(stack, force):
                     log(f"Updates are available for stack {stack['appname']}, updating", "green")
                     break
 
-        except Exception as e:
+        except:
             return False
     
     else:
@@ -88,13 +88,17 @@ def update(stack, force):
             return False
     # In the case that there are updates available and the stack is not up, there is no need to bring it down
     elif updateAvailable:
-        return up(stack)
+        if down(stack):
+            if up(stack):
+                log(f"{stack['appname']} has been updated successfully", "green")
+                return True
 
 # Function to bring down a stack
 def down(stack):
     try:
         # Return true if the stack was brought down successfully
-        return "Removed" in docker("compose", "down", _cwd=f"/var/tmp/tugboat/{stack['appname']}/")
+        docker("compose", "down", _cwd=f"/var/tmp/tugboat/{stack['appname']}/")
+        return True
     except:
         return False
 
