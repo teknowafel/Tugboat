@@ -67,12 +67,12 @@ def get_ssh():
     log(f"If you haven't already added the SSH key for your config repo, copy this public key starting on the next line to create a deploy key WITH WRITE ACCESS, then restart Tugboat. \n {pubkey}", "green")
 
 if __name__ == "__main__":
+    # Generate the ssh key and print it to the console or simply print it if it is already there
+    get_ssh()
     # Clone the config / check if it exists
     if git.clone_config():
         # Update the config if it is not updated already
         git.update_config()
-        # Generate the ssh key and print it to the console or simply print it if it is already there
-        get_ssh()
         stacks = load_stacks()
         scheduler = BackgroundScheduler()
         initialize_stacks(stacks, scheduler)

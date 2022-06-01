@@ -2,6 +2,7 @@ from sh import git, echo
 import sh
 import os
 import yaml
+import shutil
 
 # Get the current working directory
 cwd = os.getcwd()
@@ -28,7 +29,7 @@ def gen_key():
 # Function to clone the configuration from the git repository as stated in config.yml
 def clone_config():
     if os.path.exists(f"{cwd}/config/"):
-        return True
+        shutil.rmtree(f"{cwd}/config/")
     try:
         # Open the config.yml file and read it
         f = open(f"{cwd}/config.yml")
@@ -37,7 +38,8 @@ def clone_config():
         # Clone the repository using the ssh keys from .ssh and the repo from config.yml
         git.clone(config['repo-ssh-url'], f"{cwd}/config", _env={"GIT_SSH_COMMAND": f"ssh -i {cwd}/.ssh/id_rsa"})
         return True
-    except:
+    except Exception as e:
+        print(e)
         return False
 
 # Function to update the config

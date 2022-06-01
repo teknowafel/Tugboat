@@ -1,3 +1,4 @@
+from numpy import true_divide
 from sh import docker
 import os
 import yaml
@@ -55,21 +56,22 @@ def update(stack, force):
     
     # Create a variable for later use to track whether or not an update is availabe
     updateAvailable = False
-    try:
-        for service in manifest['services']:
-            # Check if the image is up to date
-            if "Image is up to date for" in docker("pull", manifest['services'][service]['image']):
-                pass
-            else:
-                updateAvailable = True
-                log(f"Updates are available for stack {stack['appname']}, updating", "green")
-                break
+    if not force:
+        try:
+            for service in manifest['services']:
+                # Check if the image is up to date
+                if "Image is up to date for" in docker("pull", manifest['services'][service]['image']):
+                    pass
+                else:
+                    updateAvailable = True
+                    log(f"Updates are available for stack {stack['appname']}, updating", "green")
+                    break
 
-    except Exception as e:
-        return False
+        except Exception as e:
+            return False
     
-    if force:
-        updateAvailable == True
+    else:
+        updateAvailable = True
 
     # If there is not an update available, tell the user
     if not updateAvailable:
