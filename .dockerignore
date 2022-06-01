@@ -1,0 +1,8 @@
+__pycache__/
+.ssh/
+config/
+lib/__pycache__/
+gen.sh/
+deps.md/
+.gitignore/
+config.yml/
