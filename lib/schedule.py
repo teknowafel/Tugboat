@@ -10,7 +10,7 @@ def schedule_interval(stack, scheduler):
 
     # Add the job to update the stack with the interval proviced in the stack's config
     try:
-        scheduler.add_job(lambda: lib.compose.update(stack), 'interval', seconds = stack['updates']['interval'], id = stack['appname'])
+        scheduler.add_job(lambda: lib.compose.update(stack, False), 'interval', seconds = stack['updates']['interval'], id = stack['appname'])
         return True
     except:
         return False

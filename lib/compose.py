@@ -18,15 +18,19 @@ def login(server, username, password):
 def up(stack):
     if check(stack):
         # Return true if the stack is already up
-        return True
+        try:
+            down(stack)
+            up(stack)
+        except:
+            return False
     try:
         # Make the folder for the stack in /var/temp if it is not there
-        if not os.path.exists(f"/var/tmp/{stack['appname']}/"):
-            os.makedirs(f"/var/tmp/{stack['appname']}/")
+        if not os.path.exists(f"/var/tmp/tugboat/{stack['appname']}/"):
+            os.makedirs(f"/var/tmp/tugboat/{stack['appname']}/")
 
         # Open the stack's manifest and copy it to /var/tmp
         f = open(f"{cwd}/config/stacks/manifests/{stack['manifest']}", "r")
-        g = open(f"/var/tmp/{stack['appname']}/docker-compose.yml", "w")
+        g = open(f"/var/tmp/tugboat/{stack['appname']}/docker-compose.yml", "w")
 
         g.write(f.read())
 
@@ -39,7 +43,7 @@ def up(stack):
         return False
 
 # Function to update a tack
-def update(stack):
+def update(stack, force):
     # Create an empty variable for the stack's manifest
     manifest = []
     with open( f"{cwd}/config/stacks/manifests/{stack['manifest']}", "r") as stream:
@@ -64,6 +68,9 @@ def update(stack):
     except Exception as e:
         return False
     
+    if force:
+        updateAvailable == True
+
     # If there is not an update available, tell the user
     if not updateAvailable:
         log(f"{stack['appname']} is already up to date", "green")
@@ -85,7 +92,7 @@ def update(stack):
 def down(stack):
     try:
         # Return true if the stack was brought down successfully
-        return "Removed" in docker("compose", "down", _cwd=f"/var/tmp/{stack['appname']}/")
+        return "Removed" in docker("compose", "down", _cwd=f"/var/tmp/tugboat/{stack['appname']}/")
     except:
         return False
 
@@ -93,6 +100,6 @@ def down(stack):
 def check(stack):
     try:
         # Return true if the stack is running
-        return "running" in docker("compose", "ps", _cwd=f"/var/tmp/{stack['appname']}/")
+        return "running" in docker("compose", "ps", _cwd=f"/var/tmp/tugboat/{stack['appname']}/")
     except:
         return False
