@@ -39,7 +39,6 @@ def clone_config():
         git.clone(config['repo-ssh-url'], f"{cwd}/config", _env={"GIT_SSH_COMMAND": f"ssh -i {cwd}/.ssh/id_rsa"})
         return True
     except Exception as e:
-        print(e)
         return False
 
 # Function to update the config
