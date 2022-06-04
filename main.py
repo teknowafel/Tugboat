@@ -24,7 +24,6 @@ def load_stacks():
                     log(exc)
             # Append the stack to the array
             stacks.append(stack)
-            log(f"Loaded stack from {filename}", "green")
 
     return stacks
 
@@ -69,10 +68,31 @@ if __name__ == "__main__":
                 # In the case that there are changes pulled, reload the stacks.
                 updated = git.update_config()
                 updatedStacks = []
+                # Load all of the stacks, we repeat this because new stacks were created in the process
                 allStacks = load_stacks()
-                for stack in allStacks:
-                    if stack['manifest'] in updated:
-                        updatedStacks.append(stack)
+
+                # Iterate through the updated stacks 
+                for updatedStack in updated: 
+                    try:
+                        # Try to open the stack config file
+                        f = open(f"{cwd}/config/stacks/{updatedStack}")
+                        stack = yaml.safe_load(f.read())
+                        f.close()
+                        if stack not in updatedStacks:
+                            updatedStacks.append(stack)
+                    except:
+                        # If it gets here, it means it's not a stack config but rather a manifest (yes, there are better ways to do this but this one is easy)
+                        try:
+                            # Iterate through all of the stacks
+                            for stackfile in allStacks:
+                                # Check if it uses the current file being looked at as a manifest
+                                if stackfile['manifest'] == stack:
+                                    # If so, add that stack to the ones to update
+                                    updatedStacks.append(stack)
+                        except:
+                            log("Error updating stack from git repo", "red")
+
+                # Initialize all of the stacks that have been changed
                 initialize_stacks(updatedStacks, scheduler)
         except (KeyboardInterrupt, SystemExit):
             # Not strictly necessary if daemonic mode is enabled but should be done if possible

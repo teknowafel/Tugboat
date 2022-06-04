@@ -3,6 +3,9 @@ import sh
 import os
 import yaml
 import shutil
+import re
+
+from lib.compose import update
 
 # Get the current working directory
 cwd = os.getcwd()
@@ -40,8 +43,11 @@ def clone_config():
 def update_config():
     try:
         # Return the files which have been updated
-        result = git.pull(_cwd=f"{cwd}/config")
-        updated = '\n'.split(grep(".yml", "<<<", f"'{result}'"))
+        result = str(git.pull(_cwd=f"{cwd}/config"))
+        if "Already up to date." in result:
+            return []
+        updated = re.findall(r'[^\/]+.yml', result)
         return updated
-    except:
+    except Exception as e:
+        print(e)
         return False
