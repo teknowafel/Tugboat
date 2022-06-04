@@ -1,12 +1,36 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 import yaml
 import os
-from lib.compose import check, up, update
+from lib.compose import check, up, update, login
 import lib.schedule
 from time import sleep
 from lib.log import log
 import lib.git as git
 cwd = os.getcwd()
+
+def login_registries():
+    try:
+        # Open the config to get registry authentication
+        f = open(f"{cwd}/config.yml")
+        log("Logging into docker registries...", "white")
+        # Load the registries from yaml
+        registries = yaml.safe_load(f.read())['registries']
+        # Close the file
+        f.close()
+
+        # Iterate through each registry
+        for registry in registries:
+            # Try to log in
+            if login(registry, registries[registry]['username'], registries[registry]['password']):
+                log(f"Logged into {registry} successfully", "green")
+            # If the login failed, alert the user
+            else:
+                log(f"Error logging into {registry}", "red")
+
+    # In case of miscellaneous errors, alert the user
+    except Exception as e:
+        print(e)
+        log("Error logging into docker registries", "red")
 
 def load_stacks():
     # Create an empty array of stack objects
@@ -51,6 +75,8 @@ def initialize_stacks(stacks, scheduler):
 if __name__ == "__main__":
     # Clone the config / check if it exists
     if git.clone_config():
+        # Log into registries
+        login_registries()
         # Update the config if it is not updated already
         git.update_config()
         stacks = load_stacks()
@@ -97,9 +123,6 @@ if __name__ == "__main__":
         except (KeyboardInterrupt, SystemExit):
             # Not strictly necessary if daemonic mode is enabled but should be done if possible
             scheduler.shutdown()
-        
-        else:
-            log("There was an error pulling config from git", "red")
 
     else:
         log("config.yml is missing or malformed", "red")

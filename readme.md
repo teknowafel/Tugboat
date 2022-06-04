@@ -34,12 +34,19 @@ This part is simple:
 ```yml
 # config.yml
 repo-url: https://<USERNAME>:<PERSONAL_ACCESS_TOKEN>@github.com/<USERNAME>/<CONFIG_REPO>.git
+
+# Add authentication for registries
+registries:
+  # Put the registry domains here (eg. ghcr.io for GitHub Container Registry)
+  ghcr.io:
+    username: <USERNAME>
+    password: <PASSWORD>
 ```
 
 ### Installation
 This part is simpler:
 ```
-docker run --name tugboat -v /path-to-config.yml:/config.yml -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/teknowafel/tugboat
+docker run --name tugboat -v /path/to/config.yml:/config.yml -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/teknowafel/tugboat
 ```
 
 ### 🎉 Congrats! 🎉
