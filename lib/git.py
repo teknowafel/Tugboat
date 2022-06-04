@@ -9,19 +9,13 @@ cwd = os.getcwd()
 
 # Function to generate an ssh keypair in the .ssh folder
 def gen_key():
-    # Check if the folder is already there, if so we do not need to generate the key
-    if not os.path.exists(f"{cwd}/.ssh/"):
-        try:
-            os.makedirs(f"{cwd}/.ssh/")
-        except:
-            return False
 
     # Create a function to run the ssh-keygen command because python functions can't have dashes
     keygen = sh.Command("ssh-keygen")
 
     # Run the keygen command and tell it to output to the .ssh folder in the working directory
     try:
-        keygen("-t", "rsa", "-q", "-f", f"{cwd}/.ssh/id_rsa")
+        keygen("-t", "rsa", "-q")
         return True
     except:
         return False
@@ -36,7 +30,8 @@ def clone_config():
         config = yaml.safe_load(f.read())
         f.close()
         # Clone the repository using the ssh keys from .ssh and the repo from config.yml
-        git.clone(config['repo-ssh-url'], f"{cwd}/config", _env={"GIT_SSH_COMMAND": f"ssh -i {cwd}/.ssh/id_rsa"})
+        git.clone(config['repo-url'], f"{cwd}/config")
+        git.remote("set-url", "origin", config['repo-url'], _cwd=f"{cwd}/config")
         return True
     except Exception as e:
         return False
@@ -45,6 +40,6 @@ def clone_config():
 def update_config():
     try:
         # Return true if the cloned repo has been updated
-        return "Already up to date." not in git.pull(_cwd=f"{cwd}/config", _env={"GIT_SSH_COMMAND": f"ssh -i {cwd}/.ssh/id_rsa"})
+        return "Already up to date." not in git.pull(_cwd=f"{cwd}/config")
     except:
         return False
