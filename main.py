@@ -67,9 +67,13 @@ if __name__ == "__main__":
             while True:
                 sleep(5)
                 # In the case that there are changes pulled, reload the stacks.
-                if git.update_config():
-                    stacks = load_stacks()
-                    initialize_stacks(stacks, scheduler)
+                updated = git.update_config()
+                updatedStacks = []
+                allStacks = load_stacks()
+                for stack in allStacks:
+                    if stack['manifest'] in updated:
+                        updatedStacks.append(stack)
+                initialize_stacks(updatedStacks, scheduler)
         except (KeyboardInterrupt, SystemExit):
             # Not strictly necessary if daemonic mode is enabled but should be done if possible
             scheduler.shutdown()

@@ -1,4 +1,4 @@
-from sh import git, echo
+from sh import git, grep
 import sh
 import os
 import yaml
@@ -39,7 +39,9 @@ def clone_config():
 # Function to update the config
 def update_config():
     try:
-        # Return true if the cloned repo has been updated
-        return "Already up to date." not in git.pull(_cwd=f"{cwd}/config")
+        # Return the files which have been updated
+        result = git.pull(_cwd=f"{cwd}/config")
+        updated = '\n'.split(grep(".yml", "<<<", f"'{result}'"))
+        return updated
     except:
         return False
