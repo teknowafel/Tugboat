@@ -2,6 +2,9 @@
 ***GitOps for Docker***  
 *The simple way to keep things up to date*
 
+### What does it do?
+Tugboat is GitOps CD for Docker. In short, this means that it will take your latest configuration from a git repository and reflect those changes on your running Docker instance using the Docker socket.
+
 ### Make a config repo
 
 Create a repo on GitHub (or wherever) for your config. Arrange it as such:
