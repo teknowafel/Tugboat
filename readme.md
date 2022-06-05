@@ -49,7 +49,7 @@ registries:
 ### Installation
 This part is simpler:
 ```
-docker run -d --name tugboat -v /path/to/config.yml:/config.yml -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/teknowafel/tugboat
+docker run -d --name tugboat -v /path/to/config.yml:/config.yml -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/teknowafel/tugboat:latest
 ```
 
 ### 🎉 Congrats! 🎉
