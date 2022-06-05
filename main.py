@@ -125,4 +125,4 @@ if __name__ == "__main__":
             scheduler.shutdown()
 
     else:
-        log("config.yml is missing or malformed", "red")
+        log("config is missing or malformed", "red")
