@@ -5,23 +5,8 @@ import yaml
 import shutil
 import re
 
-from lib.compose import update
-
 # Get the current working directory
 cwd = os.getcwd()
-
-# Function to generate an ssh keypair in the .ssh folder
-def gen_key():
-
-    # Create a function to run the ssh-keygen command because python functions can't have dashes
-    keygen = sh.Command("ssh-keygen")
-
-    # Run the keygen command and tell it to output to the .ssh folder in the working directory
-    try:
-        keygen("-t", "rsa", "-q")
-        return True
-    except:
-        return False
 
 # Function to clone the configuration from the git repository as stated in config.yml
 def clone_config():

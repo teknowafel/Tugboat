@@ -40,6 +40,7 @@ def up(stack):
         # Return true if the stack has been started successfully
         return "Running" in docker("compose", "up", "-d", _cwd=f"/var/tmp/tugboat/{stack['appname']}/")
     except Exception as e:
+        print(e)
         return False
 
 # Function to update a tack
