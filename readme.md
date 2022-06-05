@@ -51,6 +51,7 @@ This part is simpler:
 ```
 docker run \
   -d \
+  --restart unless-stopped \
   --tty \
   --name tugboat \
   -v /path/to/config.yml:/config.yml \
