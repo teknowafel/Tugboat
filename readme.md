@@ -51,7 +51,7 @@ This part is simpler:
 ```
 docker run \
   -d \
-  -tty \
+  --tty \
   --name tugboat \
   -v /path/to/config.yml:/config.yml \
   -v /var/run/docker.sock:/var/run/docker.sock \
