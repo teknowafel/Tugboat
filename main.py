@@ -1,4 +1,3 @@
-from apscheduler.schedulers.background import BackgroundScheduler
 import yaml
 import os
 from lib.compose import check, up, update, login
@@ -51,7 +50,7 @@ def load_stacks():
     stacks.sort(key=lambda x: int(x['priority']), reverse=False)
     return stacks
 
-def initialize_stacks(stacks, scheduler):
+def initialize_stacks(stacks):
     for stack in stacks:
         
         log(f"Updating stack {stack['appname']}...", "white")
@@ -66,8 +65,10 @@ def initialize_stacks(stacks, scheduler):
         try:
             # Interval updates
             if stack["updates"]["type"] == "interval":
-                lib.schedule.schedule_interval(stack, scheduler)
-                log(f"{stack['appname']} scheduled to update every {stack['updates']['interval']} seconds", "green")
+                if lib.schedule.schedule_interval(stack):
+                    log(f"{stack['appname']} scheduled to update every {stack['updates']['interval']} seconds", "green")
+                else:
+                    log(f"Error scheduling stack {stack['appname']}")
         except:
             # If there is malformed or no schedule config
             log(f"Malformed or no schedule configuration for stack {stack['appname']}. Updates will not be scheduled.", "red")
@@ -80,11 +81,8 @@ if __name__ == "__main__":
         # Update the config if it is not updated already
         git.update_config()
         stacks = load_stacks()
-        scheduler = BackgroundScheduler()
-        initialize_stacks(stacks, scheduler)
+        initialize_stacks(stacks)
 
-        # Start the scheduler
-        scheduler.start()
         log("Scheduler has been started", "green")
         
         try:
@@ -119,10 +117,9 @@ if __name__ == "__main__":
                             log("Error updating stack from git repo", "red")
 
                 # Initialize all of the stacks that have been changed
-                initialize_stacks(updatedStacks, scheduler)
+                initialize_stacks(updatedStacks)
         except (KeyboardInterrupt, SystemExit):
-            # Not strictly necessary if daemonic mode is enabled but should be done if possible
-            scheduler.shutdown()
+            pass
 
     else:
         log("config is missing or malformed", "red")
