@@ -48,7 +48,7 @@ def load_stacks():
                     log(exc)
             # Append the stack to the array
             stacks.append(stack)
-
+    stacks.sort(key=lambda x: int(x['priority']), reverse=False)
     return stacks
 
 def initialize_stacks(stacks, scheduler):
