@@ -73,9 +73,8 @@ def update(stack, force):
     else:
         updateAvailable = True
 
-    # If there is not an update available, tell the user
+    # If there is not an update available, return True
     if not updateAvailable:
-        log(f"{stack['appname']} is already up to date", "green")
         return True
 
     # In the case that the stack is up and there are updated images, bring it down and back up and then alert the user
