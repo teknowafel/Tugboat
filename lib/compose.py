@@ -1,3 +1,4 @@
+from operator import truediv
 from sh import docker
 import os
 import yaml
@@ -17,6 +18,7 @@ def login(server, username, password):
 # Function to bring a stack up
 def up(stack):
     if check(stack):
+        print("check")
         # Return true if the stack is already up
         try:
             down(stack)
@@ -38,7 +40,7 @@ def up(stack):
         g.close()
 
         # Return true if the stack has been started successfully
-        return "Running" in docker("compose", "up", "-d", _cwd=f"/var/tmp/tugboat/{stack['appname']}/")
+        return docker("compose", "up", "-d", _cwd=f"/var/tmp/tugboat/{stack['appname']}/") == ""
     except Exception as e:
         print(e)
         return False
@@ -60,7 +62,7 @@ def update(stack, force):
         try:
             for service in manifest['services']:
                 # Check if the image is up to date
-                if "Image is up to date for" in docker("pull", manifest['services'][service]['image']):
+                if "Image is up to date for" in docker("pull", f"{manifest['services'][service]['image']}:latest"):
                     pass
                 else:
                     updateAvailable = True
@@ -79,15 +81,18 @@ def update(stack, force):
 
     # In the case that the stack is up and there are updated images, bring it down and back up and then alert the user
     if updateAvailable and check(stack):
-        if down(stack):
-            if up(stack):
+        result = down(stack)
+        if result == True:
+            result = up(stack)
+            if result == True:
                 log(f"{stack['appname']} has been updated successfully", "green")
                 return True
         else:
             return False
     # In the case that there are updates available and the stack is not up, there is no need to bring it down
     elif updateAvailable:
-        if up(stack):
+        result = up(stack)
+        if result == True:
             log(f"{stack['appname']} has been updated successfully", "green")
             return True
 

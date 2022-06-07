@@ -1,12 +1,12 @@
 from datetime import datetime
 import lib.compose
-import asyncio
+import time
 import os
 import yaml
 
 cwd = os.getcwd()
 
-async def runJobs():
+def runJobs():
     while True:
         for filename in os.listdir(cwd + "/config/stacks/"):
             # Check if it is a yaml file
@@ -19,4 +19,4 @@ async def runJobs():
         if datetime.now().time().second % (stack['updates']['interval'] + 1) == 0:
             lib.compose.update(stack, False)
 
-        await asyncio.sleep(1)
+        time.sleep(1)

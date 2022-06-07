@@ -6,6 +6,7 @@ from time import sleep
 from lib.log import log
 import lib.git as git
 import asyncio
+import threading
 cwd = os.getcwd()
 
 def login_registries():
@@ -89,9 +90,8 @@ if __name__ == "__main__":
         stacks = load_stacks()
         initialize_stacks(stacks)
 
-        loop = asyncio.new_event_loop()
-        loop.run_until_complete(lib.schedule.runJobs())
-        loop.close()
+        thread = threading.Thread(target=lib.schedule.runJobs)
+        thread.start()
         log("Scheduler has been started", "green")
         
         try:
