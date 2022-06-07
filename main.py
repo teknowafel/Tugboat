@@ -5,6 +5,7 @@ import lib.schedule
 from time import sleep
 from lib.log import log
 import lib.git as git
+import asyncio
 cwd = os.getcwd()
 
 def login_registries():
@@ -48,7 +49,9 @@ def load_stacks():
             # Append the stack to the array
             stacks.append(stack)
     for stack in stacks:
-        if not stack['priority']:
+        try:
+            stack['priority']
+        except:
             stack['priority'] = 9999
     stacks.sort(key=lambda x: int(x['priority']), reverse=False)
     return stacks
@@ -68,15 +71,15 @@ def initialize_stacks(stacks):
         try:
             # Interval updates
             if stack["updates"]["type"] == "interval":
-                if lib.schedule.schedule_interval(stack):
                     log(f"{stack['appname']} scheduled to update every {stack['updates']['interval']} seconds", "green")
-                else:
-                    log(f"Error scheduling stack {stack['appname']}")
+            else:
+                log(f"Malformed or no schedule configuration for stack {stack['appname']}. Updates will not be scheduled.", "red")
         except:
             # If there is malformed or no schedule config
             log(f"Malformed or no schedule configuration for stack {stack['appname']}. Updates will not be scheduled.", "red")
 
 if __name__ == "__main__":
+
     # Clone the config / check if it exists
     if git.clone_config():
         # Log into registries
@@ -86,6 +89,9 @@ if __name__ == "__main__":
         stacks = load_stacks()
         initialize_stacks(stacks)
 
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(lib.schedule.runJobs())
+        loop.close()
         log("Scheduler has been started", "green")
         
         try:

@@ -1,17 +1,22 @@
+from datetime import datetime
 import lib.compose
-import schedule
+import asyncio
+import os
+import yaml
 
-# Function to schedule or reschedule the job for a stack
-def schedule_interval(stack):
-    # Remove the job if it is already there, if not do nothing
-    try:
-        schedule.clear(stack['appname'])
-    except:
-        pass
+cwd = os.getcwd()
 
-    # Add the job to update the stack with the interval proviced in the stack's config
-    try:
-        schedule.every(stack['updates']['interval']).seconds.do(lib.compose.update, stack, False).tag(stack['appname'])
-        return True
-    except:
-        return False
+async def runJobs():
+    while True:
+        for filename in os.listdir(cwd + "/config/stacks/"):
+            # Check if it is a yaml file
+            if filename.endswith(".yml") or filename.endswith(".yaml"):
+                f = open(f"{cwd}/config/stacks/{filename}")
+                stack = yaml.safe_load(f.read())
+                f.close()
+
+        # Check if the time in seconds is divisible by the interval (I had to add 1 for some reason)
+        if datetime.now().time().second % (stack['updates']['interval'] + 1) == 0:
+            lib.compose.update(stack, False)
+
+        await asyncio.sleep(1)
