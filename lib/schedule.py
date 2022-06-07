@@ -11,7 +11,7 @@ def schedule_interval(stack):
 
     # Add the job to update the stack with the interval proviced in the stack's config
     try:
-        schedule.every(stack['updates']['interval']).seconds.do(lib.compose.update, stack=stack, force=False).tag(stack['appname'])
+        schedule.every(stack['updates']['interval']).seconds.do(lib.compose.update, stack, False).tag(stack['appname'])
         return True
     except:
         return False
