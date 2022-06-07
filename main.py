@@ -47,6 +47,9 @@ def load_stacks():
                     log(exc)
             # Append the stack to the array
             stacks.append(stack)
+    for stack in stacks:
+        if not stack['priority']:
+            stack['priority'] = 9999
     stacks.sort(key=lambda x: int(x['priority']), reverse=False)
     return stacks
 
