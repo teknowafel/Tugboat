@@ -1,0 +1,3 @@
+rsync
+docker
+docker-compose
