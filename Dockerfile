@@ -29,6 +29,6 @@ COPY update.sh .
 
 RUN chmod +x update.sh
 
-RUN ln /update.sh /usr/bin
+RUN export PATH="/update.sh:$PATH"
 
-CMD [ "cron", "-f" ]
+CMD [ "update", "test" ]
