@@ -1,5 +1,7 @@
 FROM debian:bullseye-slim
 
+USER root
+
 WORKDIR /
 
 RUN apt-get update && apt-get install -y \
@@ -23,12 +25,18 @@ RUN apt-get update && apt-get install -y \
     docker-compose-plugin \
     git \
     rsync \
-    cron
+    mcron
 
-COPY update.sh .
+COPY update.sh /bin/update
 
-RUN chmod +x update.sh
+COPY config /root/.cron/job.vixie
 
-RUN export PATH="/update.sh:$PATH"
+COPY bootstrap.sh /bootstrap.sh
 
-CMD [ "update", "test" ]
+RUN chmod 0775 /bin/update
+
+RUN touch /var/log/tugboat
+
+RUN chmod +x /bin/update
+
+CMD sh /bootstrap.sh
