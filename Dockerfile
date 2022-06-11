@@ -1,7 +1,5 @@
 FROM debian:bullseye-slim
 
-USER root
-
 WORKDIR /
 
 RUN apt-get update && apt-get install -y \
@@ -28,8 +26,6 @@ RUN apt-get update && apt-get install -y \
     mcron
 
 COPY update.sh /bin/update
-
-COPY config /root/.cron/job.vixie
 
 COPY bootstrap.sh /bootstrap.sh
 
