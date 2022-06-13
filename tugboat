@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [[ "$1" == "update" ]]; then
+    mkdir -p /var/tmp/tugboat/$2
+    rsync /etc/tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml
+
+    # Pull the images and store the result in a variable
+    pull=$(cd /var/tmp/tugboat/$2/ && docker compose pull 2>&1)
+    # Create a variable to check if the pull is complete
+    complete='Pull complete'
+
+    # Use the regular expression to check that it has been pulled
+    if [[ $pull =~ $complete ]]; then
+        echo "Pulled new images, updating $2" >> ~/.tugboat/log
+
+        up=$(cd /var/tmp/tugboat/$2 && docker compose up -d 2>&1)
+        started="Started"
+        running="Running"
+        if [[ $up =~ $started ]]; then
+            echo "Successfully started stack $2" >> ~/.tugboat/log
+        elif [[ $up =~ $running ]]; then
+            echo "Stack $2 is running" >> ~/.tugboat/log
+        fi
+    else
+        echo "$2 is already up to date" >> ~/.tugboat/log
+    fi
+elif [[ "$1" == "start" ]]; then
+    if [[ "$2" == "all" ]];
+    fi
+elif [[ "$1" == "logs" ]]; then
+    echo "You are now viewing the logs in real time, press CTRL+C to quit"
+    echo
+    tail -f ~/.tugboat/log
+else
+    echo "Invalid command"
+fi
