@@ -132,9 +132,13 @@ elif [[ "$1" == "stop" ]]; then
 
 # If the user wishes to view logs
 elif [[ "$1" == "logs" ]]; then
-    echo "You are now viewing the logs in real time, press CTRL+C to quit"
-    echo
-    tail -f /var/log/tugboat
+    if [[ "$2" == "clear" ]]; then
+        echo "" > /var/log/tugboat
+    else
+        echo "You are now viewing the logs in real time, press CTRL+C to quit"
+        echo
+        tail -f /var/log/tugboat
+    fi
 else
     echo "Invalid command"
 fi
