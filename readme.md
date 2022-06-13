@@ -26,7 +26,7 @@ curl https://raw.githubusercontent.com/teknowafel/Tugboat/main/update.sh | sudo 
 ## Setup
 
 ### Stacks
-Stacks are stored in /etc/tugboat/stacks, or optionally in a git repository in the /stacks directory.
+Stacks are stored in /share/tugboat/stacks, or optionally in a git repository in the /stacks directory.
 
 ### GitOps configuration (optional)
 Tugboat supports the use of a git repository for storing configuration, and if GitOps is enabled, Tugboat will automatically pull the configuration periodically. Git needs to be configured to have permission to pull from the configuration repository. The recommended method for ensuring this is using an ssh public key. For Tugboat to use your git repository for configuration, add a cronjob like this (when to update is for you to decide)
@@ -34,7 +34,9 @@ Tugboat supports the use of a git repository for storing configuration, and if G
 ```
 0 * * * * tugboat update-config git@github.com:teknowafel/tugboat-config.git
 ```
-*"git@github.com:teknowafel/tugboat-config.git"* can be replaced with the URL to your own configuration repo.
+`"git@github.com:teknowafel/tugboat-config.git"` can be replaced with the URL to your own configuration repo.  
+
+*Note: if you are using an ssh key to clone the repository, you may need to run `tugboat update-config` once manually to verify the authenticity of `github.com`. This should be a one-time process.*
 
 ## Use
 Tugboat's primary use case is in a cronjob like so
@@ -47,4 +49,4 @@ This way, updates can be automatically run using Linux's most powerful schedulin
 ```
 tugboat {start|stop|update|logs} {stack_name|all|clear(for logs)}
 ```
-Stacks are pulled from /etc/tugboat/stacks or the git repo where you store your configuration.
+Stacks are pulled from /share/tugboat/stacks or the git repo where you store your configuration.
