@@ -24,6 +24,25 @@ curl https://raw.githubusercontent.com/teknowafel/Tugboat/main/update.sh | sudo 
 *This command can be run again to update Tugboat should there be a new update*
 
 ## Setup
+Place your docker compose files for your stacks in the `/share/tugboat/stacks` directory, or in the `/share` directory of your configuration repository. Edit your user's crontab to automatically update/start/stop your stacks and (optionally) config.
+```
+#/etc/crontab
+
+0 * * * * tugboat update-config git@github.com:teknowafel/tugboat-config.git
+
+0 * * * * tugboat update all
+
+* * * * * tugboat update test
+
+25 12 * * * tugboat stop all
+
+0 0 * * * tugboat start all
+```
+*Editing /etc/crontab directly is not recommended*
+
+*Note: docker compose files must end in `.yml` and not `.yaml`*  
+
+You're pretty much done now. To view Tugboat's logs, run `tugboat logs`. You can clear the logs using `tugboat logs clear`.
 
 ### Stacks
 Stacks are stored in /share/tugboat/stacks, or optionally in a git repository in the /stacks directory.

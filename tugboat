@@ -149,7 +149,7 @@ elif [[ "$1" == "update-config" ]]; then
 # If the user wishes to view logs
 elif [[ "$1" == "logs" ]]; then
     if [[ "$2" == "clear" ]]; then
-        echo "" > /var/log/tugboat
+        echo " " > /var/log/tugboat
     else
         echo "You are now viewing the logs in real time, press CTRL+C to quit"
         echo
