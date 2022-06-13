@@ -25,7 +25,19 @@ if [[ "$1" == "update" ]]; then
         echo "$2 is already up to date" >> ~/.tugboat/log
     fi
 elif [[ "$1" == "start" ]]; then
-    if [[ "$2" == "all" ]];
+    mkdir -p /var/tmp/tugboat/$2
+    rsync /etc/tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml
+    if [[ "$2" == "all" ]]; then
+        for stack in */etc/tugboat/stacks/; do
+            up=$(cd /var/tmp/tugboat/$stack && docker compose up -d 2>&1)
+            started="Started"
+            running="Running"
+            if [[ $up =~ $started ]]; then
+                echo "Successfully started stack $2" >> ~/.tugboat/log
+            elif [[ $up =~ $running ]]; then
+                echo "Stack $2 is running" >> ~/.tugboat/log
+            fi
+        done  
     fi
 elif [[ "$1" == "logs" ]]; then
     echo "You are now viewing the logs in real time, press CTRL+C to quit"
