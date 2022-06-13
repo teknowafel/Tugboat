@@ -141,6 +141,7 @@ elif [[ "$1" == "update-config" ]]; then
         if [[ ! $pull =~ $uptodate ]]; then
             echo "Updated config"
             echo $pull
+        fi
     else
         echo "Error updating config, $clone" >> /var/log/tugboat
     fi
