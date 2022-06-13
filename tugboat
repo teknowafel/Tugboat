@@ -11,23 +11,23 @@ if [[ "$1" == "update" ]]; then
 
     # Use the regular expression to check that it has been pulled
     if [[ $pull =~ $complete ]]; then
-        echo "Pulled new images, updating $2" >> /etc/tugboat/log
+        echo "Pulled new images, updating $2" >> /var/log/tugboat
 
         up=$(cd /var/tmp/tugboat/$2 && docker compose up -d 2>&1)
         started="Started"
         running="Running"
         if [[ $up =~ $started ]]; then
-            echo "Successfully started stack $2" >> /etc/tugboat/log
+            echo "Successfully started stack $2" >> /var/log/tugboat
         elif [[ $up =~ $running ]]; then
-            echo "Stack $2 is running" >> /etc/tugboat/log
+            echo "Stack $2 is running" >> /var/log/tugboat
         fi
     else
-        echo "$2 is already up to date" >> /etc/tugboat/log
+        echo "$2 is already up to date" >> /var/log/tugboat
         up=$(cd /var/tmp/tugboat/$2 && docker compose up -d 2>&1)
         started="Started"
         running="Running"
         if [[ $up =~ $running ]]; then
-            echo "Stack $2 is running" >> /etc/tugboat/log
+            echo "Stack $2 is running" >> /var/log/tugboat
         fi
     fi
 elif [[ "$1" == "start" ]]; then
@@ -39,16 +39,16 @@ elif [[ "$1" == "start" ]]; then
             started="Started"
             running="Running"
             if [[ $up =~ $started ]]; then
-                echo "Successfully started stack $2" >> /etc/tugboat/log
+                echo "Successfully started stack $2" >> /var/log/tugboat
             elif [[ $up =~ $running ]]; then
-                echo "Stack $2 is running" >> /etc/tugboat/log
+                echo "Stack $2 is running" >> /var/log/tugboat
             fi
         done  
     fi
 elif [[ "$1" == "logs" ]]; then
     echo "You are now viewing the logs in real time, press CTRL+C to quit"
     echo
-    tail -f /etc/tugboat/log
+    tail -f /var/log/tugboat
 else
     echo "Invalid command"
 fi
