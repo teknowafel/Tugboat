@@ -137,7 +137,10 @@ elif [[ "$1" == "update-config" ]]; then
     done="done"
     if [[ $clone =~ $exists || $clone =~ $done ]]; then
         pull=$(cd /share/tugboat && git pull 2>&1)
-        exists="already exists and is not an empty directory."
+        uptodate="Already up to date."
+        if [[ ! $pull =~ $uptodate ]]; then
+            echo "Updated config"
+            echo $pull
     else
         echo "Error updating config, $clone" >> /var/log/tugboat
     fi
