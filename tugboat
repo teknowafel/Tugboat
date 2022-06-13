@@ -115,10 +115,10 @@ elif [[ "$1" == "stop" ]]; then
         # Iterate through them
         for stack in /etc/tugboat/stacks/*; do
             # Attempt to stop them
-            down=$(cd /var/tmp/tugboat/$stack && docker compose down 2>&1)
+            down=$(cd /var/tmp/tugboat/${stack:20:-4} && docker compose down 2>&1)
             removed="Removed"
             if [[ $down =~ $removed ]]; then
-                echo "Successfully stopped stack $stack" >> /var/log/tugboat
+                echo "Successfully stopped stack ${stack:20:-4}" >> /var/log/tugboat
             fi
         done
     else
