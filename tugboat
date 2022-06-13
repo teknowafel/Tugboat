@@ -4,7 +4,7 @@
 if [[ "$1" == "update" ]]; then
     if [[ "$2" == "all" ]]; then
         # Iterate through all stored stacks
-        for stack in */etc/tugboat/stacks/; do
+        for stack in /etc/tugboat/stacks/*/; do
             # Pull the images and store the result in a variable
             pull=$(cd /var/tmp/tugboat/$stack/ && docker compose pull 2>&1)
             # Create a variable to check if the pull is complete
@@ -78,7 +78,7 @@ if [[ "$1" == "update" ]]; then
 elif [[ "$1" == "start" ]]; then
     if [[ "$2" == "all" ]]; then
         # Iterate through all stored stacks
-        for stack in */etc/tugboat/stacks/; do
+        for stack in /etc/tugboat/stacks/*/; do
             # Make a directory and copy the docker compose file
             mkdir -p /var/tmp/tugboat/$stack
             rsync /etc/tugboat/stacks/$stack.yml /var/tmp/tugboat/$2/docker-compose.yml
@@ -113,7 +113,7 @@ elif [[ "$1" == "stop" ]]; then
     if [[ "$2" == "all" ]]; then
 
         # Iterate through them
-        for stack in */etc/tugboat/stacks/; do
+        for stack in /etc/tugboat/stacks/*/; do
             # Attempt to stop them
             down=$(cd /var/tmp/tugboat/$stack && docker compose down 2>&1)
             removed="Removed"
