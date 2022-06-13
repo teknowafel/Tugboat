@@ -130,6 +130,18 @@ elif [[ "$1" == "stop" ]]; then
         fi
     fi
 
+# If the user wishes to update configuration from a git repository
+elif [[ "$1" == "update-config" ]]; then
+    clone=$(git clone $2 /etc/tugboat 2>&1)
+    exists="already exists and is not an empty directory."
+    done="done"
+    if [[ $clone =~ $exists || $clone =~ $done ]]; then
+        pull=$(cd /etc/tugboat && git pull 2>&1)
+        exists="already exists and is not an empty directory."
+    else
+        echo "Error updating config, $clone" >> /var/log/tugboat
+    fi
+
 # If the user wishes to view logs
 elif [[ "$1" == "logs" ]]; then
     if [[ "$2" == "clear" ]]; then
