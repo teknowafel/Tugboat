@@ -4,35 +4,35 @@
 if [[ "$1" == "update" ]]; then
     if [[ "$2" == "all" ]]; then
         # Iterate through all stored stacks
-        for stack in /etc/tugboat/stacks/*/; do
+        for stack in /etc/tugboat/stacks/*; do
             # Pull the images and store the result in a variable
-            pull=$(cd /var/tmp/tugboat/$stack/ && docker compose pull 2>&1)
+            pull=$(cd /var/tmp/tugboat/${stack:20:-4}/ && docker compose pull 2>&1)
             # Create a variable to check if the pull is complete
             complete='Pull complete'
 
             # Use the regular expression to check that it has been pulled
             if [[ $pull =~ $complete ]]; then
                 # Log if the pull was successful
-                echo "Pulled new images, updating $stack" >> /var/log/tugboat
+                echo "Pulled new images, updating ${stack:20:-4}" >> /var/log/tugboat
 
                 # Attempt to start the stack
-                up=$(cd /var/tmp/tugboat/$stack && docker compose up -d 2>&1)
+                up=$(cd /var/tmp/tugboat/${stack:20:-4} && docker compose up -d 2>&1)
                 started="Started"
                 running="Running"
                 if [[ $up =~ $started ]]; then
-                    echo "Successfully started stack $stack" >> /var/log/tugboat
+                    echo "Successfully started stack ${stack:20:-4}" >> /var/log/tugboat
                 elif [[ $up =~ $running ]]; then
-                    echo "Stack $stack is running" >> /var/log/tugboat
+                    echo "Stack ${stack:20:-4} is running" >> /var/log/tugboat
                 fi
             else
                 # In the case that the stack is up to date
-                echo "$stack is already up to date" >> /var/log/tugboat
+                echo "${stack:20:-4} is already up to date" >> /var/log/tugboat
                 # Start it in case it has not been started already
-                up=$(cd /var/tmp/tugboat/$stack && docker compose up -d 2>&1)
+                up=$(cd /var/tmp/tugboat/${stack:20:-4} && docker compose up -d 2>&1)
                 started="Started"
                 running="Running"
                 if [[ $up =~ $running ]]; then
-                    echo "Stack $stack is running" >> /var/log/tugboat
+                    echo "Stack ${stack:20:-4} is running" >> /var/log/tugboat
                 fi
             fi
         done
@@ -78,18 +78,18 @@ if [[ "$1" == "update" ]]; then
 elif [[ "$1" == "start" ]]; then
     if [[ "$2" == "all" ]]; then
         # Iterate through all stored stacks
-        for stack in /etc/tugboat/stacks/*/; do
+        for stack in /etc/tugboat/stacks/*; do
             # Make a directory and copy the docker compose file
-            mkdir -p /var/tmp/tugboat/$stack
-            rsync /etc/tugboat/stacks/$stack.yml /var/tmp/tugboat/$2/docker-compose.yml
+            mkdir -p /var/tmp/tugboat/${stack:20:-4}
+            rsync /etc/tugboat/stacks/${stack:20:-4}.yml /var/tmp/tugboat/$2/docker-compose.yml
             # Attempt to start the stack
-            up=$(cd /var/tmp/tugboat/$stack && docker compose up -d 2>&1)
+            up=$(cd /var/tmp/tugboat/${stack:20:-4} && docker compose up -d 2>&1)
             started="Started"
             running="Running"
             if [[ $up =~ $started ]]; then
-                echo "Successfully started stack $stack" >> /var/log/tugboat
+                echo "Successfully started stack ${stack:20:-4}" >> /var/log/tugboat
             elif [[ $up =~ $running ]]; then
-                echo "Stack $2 is running" >> /var/log/tugboat
+                echo "Stack ${stack:20:-4} is running" >> /var/log/tugboat
             fi
         done
     else
@@ -113,7 +113,7 @@ elif [[ "$1" == "stop" ]]; then
     if [[ "$2" == "all" ]]; then
 
         # Iterate through them
-        for stack in /etc/tugboat/stacks/*/; do
+        for stack in /etc/tugboat/stacks/*; do
             # Attempt to stop them
             down=$(cd /var/tmp/tugboat/$stack && docker compose down 2>&1)
             removed="Removed"
