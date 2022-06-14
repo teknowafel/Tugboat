@@ -34,8 +34,8 @@ jobs:
       # Push the binary back to the repo
       - name: Push binary
         run: |
-          git config --global user.email "actions@example.com"
-          && git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@example.com" \
+          && git config --global user.name "GitHub Actions" \
           && git add -A \
           && git commit -m "Automatically compiled binary" \
           && git push
