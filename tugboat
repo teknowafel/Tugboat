@@ -92,4 +92,3 @@ elif [[ "$1" == "logs" ]]; then
 else
     echo "Invalid command"
 fi
-fi
