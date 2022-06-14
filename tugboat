@@ -5,6 +5,8 @@ if [[ "$1" == "update" ]]; then
     if [[ "$2" == "all" ]]; then
         # Iterate through all stored stacks
         for stack in ~/.tugboat/stacks/*; do
+            mkdir -p /var/tmp/tugboat/${stack:20:-4}
+            rsync ~/.tugboat/stacks/${stack:20:-4}.yml /var/tmp/tugboat/$2/docker-compose.yml
             # Pull the images and store the result in a variable
             pull=$(cd /var/tmp/tugboat/${stack:20:-4}/ && docker compose pull 2>&1)
             # Create a variable to check if the pull is complete
@@ -77,6 +79,8 @@ if [[ "$1" == "update" ]]; then
 # If the user chooses to start a stack(s)
 elif [[ "$1" == "start" ]]; then
     if [[ "$2" == "all" ]]; then
+        mkdir -p /var/tmp/tugboat/${stack:20:-4}
+        rsync ~/.tugboat/stacks/${stack:20:-4}.yml /var/tmp/tugboat/$2/docker-compose.yml
         # Iterate through all stored stacks
         for stack in ~/.tugboat/stacks/*; do
             # Make a directory and copy the docker compose file
@@ -111,7 +115,8 @@ elif [[ "$1" == "start" ]]; then
 elif [[ "$1" == "stop" ]]; then
     # If they are trying to stop all stacks
     if [[ "$2" == "all" ]]; then
-
+        mkdir -p /var/tmp/tugboat/${stack:20:-4}
+        rsync ~/.tugboat/stacks/${stack:20:-4}.yml /var/tmp/tugboat/$2/docker-compose.yml
         # Iterate through them
         for stack in ~/.tugboat/stacks/*; do
             # Attempt to stop them
