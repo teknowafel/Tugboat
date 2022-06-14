@@ -21,6 +21,7 @@ if [[ "$1" == "update" ]]; then
         else
             echo "Error starting stack $2, $recreate" >> /var/log/tugboat
         fi
+    fi
      
     # Pull the images and store the result in a variable
     pull=$(cd /var/tmp/tugboat/$2/ && docker compose pull 2>&1)
