@@ -26,7 +26,7 @@ jobs:
       # Log in to the registry
       - name: Install shc
         run: |
-          apt-get update && apt-get install shc
+          sudo apt-get update && sudo apt-get install shc
       # Build the compiled binary
       - name: shc -f
         run: |
