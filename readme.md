@@ -7,7 +7,6 @@ Tugboat helps you keep your docker apps up to date using the power of *docker co
 * Update a stack
 * Start a stack
 * Stop a stack
-    * You can also apply all of these operations to all stacks at once for convenience
 
 Tugboat installs as a command on your docker host and features simple syntax.
 
@@ -66,6 +65,6 @@ This way, updates can be automatically run using Linux's most powerful schedulin
 
 ## Syntax
 ```
-tugboat {start|stop|update|logs} {stack_name|all|clear(for logs)}
+tugboat {start|stop|update|update-config|logs} {stack_name|repo_url(for update-config)|clear(for logs)}
 ```
 Stacks are pulled from ~/.tugboat/stacks or the git repo where you store your configuration.
