@@ -29,13 +29,7 @@ Place your docker compose files for your stacks in the `~/.tugboat/stacks` direc
 
 0 * * * * tugboat update-config git@github.com:teknowafel/tugboat-config.git
 
-0 * * * * tugboat update all
-
 * * * * * tugboat update test
-
-25 12 * * * tugboat stop all
-
-0 0 * * * tugboat start all
 ```
 *Editing /etc/crontab directly is not recommended*
 
