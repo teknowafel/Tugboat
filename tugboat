@@ -4,7 +4,7 @@
 if [[ "$1" == "update" ]]; then
     if [[ "$2" == "all" ]]; then
         # Iterate through all stored stacks
-        for stack in /share/tugboat/stacks/*; do
+        for stack in ~/.tugboat/stacks/*; do
             # Pull the images and store the result in a variable
             pull=$(cd /var/tmp/tugboat/${stack:20:-4}/ && docker compose pull 2>&1)
             # Create a variable to check if the pull is complete
@@ -40,7 +40,7 @@ if [[ "$1" == "update" ]]; then
     # If the user has chosen to update a single stack
     else
         mkdir -p /var/tmp/tugboat/$2
-        rsync /share/tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml
+        rsync ~/.tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml
 
         # Pull the images and store the result in a variable
         pull=$(cd /var/tmp/tugboat/$2/ && docker compose pull 2>&1)
@@ -78,10 +78,10 @@ if [[ "$1" == "update" ]]; then
 elif [[ "$1" == "start" ]]; then
     if [[ "$2" == "all" ]]; then
         # Iterate through all stored stacks
-        for stack in /share/tugboat/stacks/*; do
+        for stack in ~/.tugboat/stacks/*; do
             # Make a directory and copy the docker compose file
             mkdir -p /var/tmp/tugboat/${stack:20:-4}
-            rsync /share/tugboat/stacks/${stack:20:-4}.yml /var/tmp/tugboat/$2/docker-compose.yml
+            rsync ~/.tugboat/stacks/${stack:20:-4}.yml /var/tmp/tugboat/$2/docker-compose.yml
             # Attempt to start the stack
             up=$(cd /var/tmp/tugboat/${stack:20:-4} && docker compose up -d 2>&1)
             started="Started"
@@ -95,7 +95,7 @@ elif [[ "$1" == "start" ]]; then
     else
         # Make a directory for the stack chosen
         mkdir -p /var/tmp/tugboat/$2
-        rsync /share/tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml
+        rsync ~/.tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml
         # Attempt to start the stack
         up=$(cd /var/tmp/tugboat/$2 && docker compose up -d 2>&1)
         started="Started"
@@ -113,7 +113,7 @@ elif [[ "$1" == "stop" ]]; then
     if [[ "$2" == "all" ]]; then
 
         # Iterate through them
-        for stack in /share/tugboat/stacks/*; do
+        for stack in ~/.tugboat/stacks/*; do
             # Attempt to stop them
             down=$(cd /var/tmp/tugboat/${stack:20:-4} && docker compose down 2>&1)
             removed="Removed"
@@ -132,11 +132,11 @@ elif [[ "$1" == "stop" ]]; then
 
 # If the user wishes to update configuration from a git repository
 elif [[ "$1" == "update-config" ]]; then
-    clone=$(git clone $2 /share/tugboat 2>&1)
+    clone=$(git clone $2 ~/.tugboat 2>&1)
     exists="already exists and is not an empty directory."
     done="done"
     if [[ $clone =~ $exists || $clone =~ $done ]]; then
-        pull=$(cd /share/tugboat && git pull 2>&1)
+        pull=$(cd ~/.tugboat && git pull 2>&1)
         uptodate="Already up to date."
         if [[ ! $pull =~ $uptodate ]]; then
             echo "Updated config"
