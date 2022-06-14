@@ -24,7 +24,7 @@ curl https://raw.githubusercontent.com/teknowafel/Tugboat/main/update.sh | sudo 
 *This command can be run again to update Tugboat should there be a new update*
 
 ## Setup
-Place your docker compose files for your stacks in the `/share/tugboat/stacks` directory, or in the `/share` directory of your configuration repository. Edit your user's crontab to automatically update/start/stop your stacks and (optionally) config.
+Place your docker compose files for your stacks in the `/opt/tugboat/stacks` directory, or in the `/share` directory of your configuration repository. Edit your user's crontab to automatically update/start/stop your stacks and (optionally) config.
 ```
 #/etc/crontab
 
@@ -45,7 +45,7 @@ Place your docker compose files for your stacks in the `/share/tugboat/stacks` d
 You're pretty much done now. To view Tugboat's logs, run `tugboat logs`. You can clear the logs using `tugboat logs clear`.
 
 ### Stacks
-Stacks are stored in /share/tugboat/stacks, or optionally in a git repository in the /stacks directory.
+Stacks are stored in /opt/tugboat/stacks, or optionally in a git repository in the /stacks directory.
 
 ### GitOps configuration (optional)
 Tugboat supports the use of a git repository for storing configuration, and if GitOps is enabled, Tugboat will automatically pull the configuration periodically. Git needs to be configured to have permission to pull from the configuration repository. The recommended method for ensuring this is using an ssh public key. For Tugboat to use your git repository for configuration, add a cronjob like this (when to update is for you to decide)
@@ -68,4 +68,4 @@ This way, updates can be automatically run using Linux's most powerful schedulin
 ```
 tugboat {start|stop|update|logs} {stack_name|all|clear(for logs)}
 ```
-Stacks are pulled from /share/tugboat/stacks or the git repo where you store your configuration.
+Stacks are pulled from /opt/tugboat/stacks or the git repo where you store your configuration.
