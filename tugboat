@@ -7,7 +7,7 @@ if [[ "$1" == "update" ]]; then
     rsync ~/.tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml
 
     # Recreate the stack in the the case that changes have been made to the docker compose file
-    cd /var/tmp/tugboat && docker compose up -d > /dev/null
+    cd /var/tmp/tugboat/$2 && docker compose up -d > /dev/null 2>&1
 
     # Pull the images and store the result in a variable
     pull=$(cd /var/tmp/tugboat/$2/ && docker compose pull 2>&1)
