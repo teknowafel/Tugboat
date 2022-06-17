@@ -12,6 +12,7 @@ Tugboat installs as a command on your docker host and features simple syntax.
 
 ## Installation
 You'll need:
+* Debian Linux (tested on bullseye, should work on most previous versions)
 * Sudo privelleges
 * To be in the docker group (on any user where you'll be running a crontab)
 * The Docker container engine along with the docker compose plugin.  
