@@ -4,7 +4,9 @@
 if [[ "$1" == "update" ]]; then
     update=false
 
-    if diff -s ~/.tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml > /dev/null ; then
+    diff=$(diff -s ~/.tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml)
+    identical="are identical"
+    if  [[ ! $diff =~ $identical ]] ; then
         echo ""
         update=true
         echo "Config has changed, $2 will be updated" >> /var/log/tugboat
