@@ -4,12 +4,15 @@
 if [[ "$1" == "update" ]]; then
     update=false
 
-    diff=$(diff -s ~/.tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml)
+    diff=$(diff -s ~/.tugboat/stacks/$2.yml /var/tmp/tugboat/$2/docker-compose.yml 2>&1)
     identical="are identical"
+    nosuch="No such file or directory"
     if  [[ ! $diff =~ $identical ]] ; then
         echo ""
         update=true
         echo "Config has changed, $2 will be updated" >> /var/log/tugboat
+    elif [[ $diff =~ $nosuch ]]; then
+        echo "Config was not there in the first place, $2 will be updated" >> /var/log/tugboat
     fi
 
     mkdir -p /var/tmp/tugboat/$2
