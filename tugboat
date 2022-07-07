@@ -66,6 +66,8 @@ elif [[ "$1" == "start" ]]; then
         echo "Successfully started stack $2" >> /var/log/tugboat
     elif [[ $up =~ $running ]]; then
         echo "Stack $2 is running" >> /var/log/tugboat
+    else
+        echo "Error starting stack $2, $up" >> /var/log/tugboat
     fi
 
 # If the user chooses to stop a stack(s)
