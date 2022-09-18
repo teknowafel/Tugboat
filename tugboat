@@ -11,8 +11,10 @@ if [[ "$1" == "update" ]]; then
         echo ""
         update=true
         echo "Config has changed, $2 will be updated" >> /var/log/tugboat
+        echo "Config has changed, $2 will be updated"
     elif [[ $diff =~ $nosuch ]]; then
         echo "Config was not there in the first place, $2 will be updated" >> /var/log/tugboat
+        echo "Config was not there in the first place, $2 will be updated"
     fi
 
     mkdir -p /var/tmp/tugboat/$2
@@ -27,10 +29,12 @@ if [[ "$1" == "update" ]]; then
     if [[ $pull =~ $complete ]]; then
         # Log if the pull was successful
         echo "Pulled new images, $2 will be updated" >> /var/log/tugboat
+        echo "Pulled new images, $2 will be updated"
         update=true
     else
         # In the case that the stack is up to date
         echo "$2's images are already up to date" >> /var/log/tugboat
+        echo "$2's images are already up to date"
     fi
 
     if [[ $update ]]; then    
@@ -40,8 +44,10 @@ if [[ "$1" == "update" ]]; then
         running="Running"
         if [[ $up =~ $started ]]; then
             echo "Successfully updated and started stack $2" >> /var/log/tugboat
+            echo "Successfully updated and started stack $2"
         elif [[ $up =~ $running ]]; then
             echo "Stack $2 is running" >> /var/log/tugboat
+            echo "Stack $2 is running"
         fi
     else
         # Start it in case it has not been started already
@@ -50,6 +56,7 @@ if [[ "$1" == "update" ]]; then
         running="Running"
         if [[ $up =~ $running ]]; then
             echo "Stack $2 is running" >> /var/log/tugboat
+            echo "Stack $2 is running"
         fi
     fi
 
@@ -64,10 +71,13 @@ elif [[ "$1" == "start" ]]; then
     running="Running"
     if [[ $up =~ $started ]]; then
         echo "Successfully started stack $2" >> /var/log/tugboat
+        echo "Successfully started stack $2"
     elif [[ $up =~ $running ]]; then
         echo "Stack $2 is running" >> /var/log/tugboat
+        echo "Stack $2 is running"
     else
         echo "Error starting stack $2, $up" >> /var/log/tugboat
+        echo "Error starting stack $2, $up"
     fi
 
 # If the user chooses to stop a stack(s)
@@ -78,6 +88,7 @@ elif [[ "$1" == "stop" ]]; then
     removed="Removed"
     if [[ $down =~ $removed ]]; then
         echo "Successfully stopped stack $2" >> /var/log/tugboat
+        echo "Successfully stopped stack $2"
     fi
 
 # If the user wishes to update configuration from a git repository
@@ -90,22 +101,27 @@ elif [[ "$1" == "update-config" ]]; then
         pull=$(cd ~/.tugboat && git pull 2>&1)
         uptodate="Already up to date."
         if [[ ! $pull =~ $uptodate ]]; then
+            echo "Updated config" >> /var/log/tugboat
             echo "Updated config"
+            echo $pull >> /var/log/tugboat
             echo $pull
         fi
     else
         echo "Error updating config, $clone" >> /var/log/tugboat
+        echo "Error updating config, $clone"
     fi
 
 # If the user wishes to view logs
 elif [[ "$1" == "logs" ]]; then
     if [[ "$2" == "clear" ]]; then
-        echo " " > /var/log/tugboat
+        echo "Logs have been cleared." > /var/log/tugboat
+        echo "Logs have been cleared."
     else
         echo "You are now viewing the logs in real time, press CTRL+C to quit"
         echo
         tail -f /var/log/tugboat
     fi
 else
+    echo "Invalid command" >> /var/log/tugboat
     echo "Invalid command"
 fi
